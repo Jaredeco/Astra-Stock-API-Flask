@@ -7,16 +7,21 @@ from xml.etree import ElementTree as et
 
 def download_and_unzip(url, extract_to='.'):
     http_response = urlopen(url)
-    zipfile = ZipFile(BytesIO(http_response.read()))
-    zipfile.extractall(path=extract_to)
+    # zipfile = ZipFile(BytesIO(http_response.read()))
+    # zipfile.extractall(path=extract_to)
+    with ZipFile(BytesIO(http_response.read()), 'r') as f:
+        comp_files = f.namelist()
+        for comp_file in comp_files:
+            cfp = f.open(comp_file, 'r')
+            return et.parse(cfp)
 
 
 class AstraZip:
     def __init__(self):
         file_url = 'https://www.retailys.cz/wp-content/uploads/astra_export_xml.zip'
         file_path = 'export_full.xml'
-        download_and_unzip(file_url)
-        self.data = et.parse(file_path).getroot()
+        
+        self.data = download_and_unzip(file_url).getroot()
         self.products = self.data.find('items').findall('item')
 
     def get_products_number(self):
