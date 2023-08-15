@@ -5,7 +5,8 @@ from zipfile import ZipFile
 from xml.etree import ElementTree as et
 
 
-def download_and_unzip(url, extract_to='.'):
+def download_and_unzip(url):
+    # , extract_to='.'
     http_response = urlopen(url)
     # zipfile = ZipFile(BytesIO(http_response.read()))
     # zipfile.extractall(path=extract_to)
@@ -43,8 +44,7 @@ class AstraZip:
                     return parts_names
         return []
 
-
-astra_zip = AstraZip()
+# astra_zip = AstraZip()
 app = Flask(__name__)
 
 
@@ -55,18 +55,22 @@ def index():
 
 @app.route('/products_number/')
 def astra_products_number():
+    # save memory on deploy
+    astra_zip = AstraZip()
     products_number = astra_zip.get_products_number()
     return render_template('products_number.html', products_number=str(products_number))
 
 
 @app.route('/products/')
 def astra_products_names():
+    astra_zip = AstraZip()
     products_names = astra_zip.get_products_names()
     return render_template('products.html', products_names=products_names)
 
 
 @app.route('/product/<product_code>/')
 def astra_product_parts(product_code):
+    astra_zip = AstraZip()
     product_parts = astra_zip.get_products_parts(product_code)
     return render_template('product_parts.html', product_parts=product_parts)
 
