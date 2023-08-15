@@ -65,6 +65,3 @@ def astra_product_parts(product_code):
     product_parts = astra_zip.get_products_parts(product_code)
     return render_template('product_parts.html', product_parts=product_parts)
 
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port='2222')
